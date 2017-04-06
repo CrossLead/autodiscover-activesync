@@ -33,23 +33,25 @@
   "homepage": "https://github.com/CrossLead/autodiscover-activesync",
   "devDependencies": {
     "@types/chai": "3.4.34",
-    "@types/denodeify": "1.2.30",
     "@types/lodash": "4.14.58",
     "@types/request": "0.0.39",
-    "@types/request-promise": "4.1.33",
-    "@types/xml2js": "0.0.33",
     "ava": "0.18.2",
     "chai": "3.5.0",
-    "denodeify": "1.2.1",
     "lodash": "4.16.2",
-    "request-promise": "0.4.2",
     "tslint": "3.15.1",
-    "typescript": "2.2.1",
-    "xml2js": "0.4.17"
+    "typescript": "2.2.1"
   },
   "ava": {
     "files": [
       "dist/test/**/*.js"
     ]
+  },
+  "dependencies": {
+    "@types/request-promise": "4.1.33",
+    "@types/denodeify": "1.2.30",
+    "@types/xml2js": "0.0.33",
+    "denodeify": "1.2.1",
+    "request-promise": "0.4.2",
+    "xml2js": "0.4.17"
   }
 }

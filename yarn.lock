@@ -74,7 +74,7 @@
     "@types/form-data" "*"
     "@types/node" "*"
 
-"@types/xml2js@^0.0.33":
+"@types/xml2js@0.0.33":
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/@types/xml2js/-/xml2js-0.0.33.tgz#20c5dd6460245284d64a55690015b95e409fb7de"
 
