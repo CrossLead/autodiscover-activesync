@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution" : "node",
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "removeComments": false,
+    "noLib": false,
+    "pretty": true,
+    "outDir": "./dist/",
+    "inlineSourceMap": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "lib": [
+      "es6"
+    ]
+  },
+  "include": [
+    "src/index.ts",
+    "test/index.ts"
+  ]
+}

@@ -1,0 +1,9 @@
+node_modules/*
+bower_components/*
+papers/*
+dist/*
+!dist/browser/gak.js
+!dist/browser/gak.min.js
+!dist/browser/gak.js.map
+esdoc/*
+.publish/*

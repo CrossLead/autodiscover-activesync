@@ -1,0 +1,55 @@
+{
+  "name": "autodiscover-activesync",
+  "version": "0.0.1",
+  "description": "Autodiscover for Active Sync",
+  "main": "./dist/src/index.js",
+  "typings": "./dist/src/index.d.ts",
+  "scripts": {
+    "watch": "bash -c \"./node_modules/typescript/bin/tsc -w -d -p ./\"",
+    "build": "bash -c \"rm -rf ./dist/\" && npm run lint && npm run tscompile",
+    "pretest": "npm run build",
+    "prepublish": "npm test",
+    "test": "bash -c \"./node_modules/.bin/ava\"",
+    "tscompile": "bash -c \"./node_modules/typescript/bin/tsc -d -p ./\"",
+    "docs": "bash -c \"rm -rf ./docs/ && ./node_modules/typedoc/bin/typedoc --mode file --theme default --experimentalAsyncFunctions --target es5 --out ./docs/ ./src/ && touch ./docs/.nojekyll\"",
+    "gh-pages": "npm run docs && ./node_modules/gh-pages/bin/gh-pages --dotfiles true -d ./docs/",
+    "lint": "bash -c \"./node_modules/tslint/bin/tslint -c ./tslint.json ./{test,lib}/**/*.ts && echo '> \\033[0;32mlinter passed!\\033[0m'\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CrossLead/autodiscover-activesync.git"
+  },
+  "keywords": [
+    "autodiscover",
+    "exchange",
+    "microsoft",
+    "pox"
+  ],
+  "author": "Mark Bradley",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/CrossLead/autodiscover-activesync/issues"
+  },
+  "homepage": "https://github.com/CrossLead/autodiscover-activesync",
+  "devDependencies": {
+    "@types/chai": "3.4.34",
+    "@types/denodeify": "1.2.30",
+    "@types/lodash": "4.14.58",
+    "@types/request": "0.0.39",
+    "@types/request-promise": "4.1.33",
+    "@types/xml2js": "0.0.33",
+    "ava": "0.18.2",
+    "chai": "3.5.0",
+    "denodeify": "1.2.1",
+    "lodash": "4.16.2",
+    "request-promise": "0.4.2",
+    "tslint": "3.15.1",
+    "typescript": "2.2.1",
+    "xml2js": "0.4.17"
+  },
+  "ava": {
+    "files": [
+      "dist/test/**/*.js"
+    ]
+  }
+}
