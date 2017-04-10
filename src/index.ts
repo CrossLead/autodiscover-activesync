@@ -65,7 +65,7 @@ async function getResponse(url: string, username: string, password: string, requ
 
   if (!response) {
     if (debug) {
-      console.log('NO RESPONSE for URL' + url);
+      console.log('NO RESPONSE for URL', url);
     }
     
     return null;
