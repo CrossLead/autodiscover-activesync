@@ -6,7 +6,7 @@ test('get auto discover url', async () => {
   const emailAddress: string = 'mark.bradley@crosslead.com';
   const password: string = 'PASSWORD';
 
-  const url: string = await autodiscover({
+  const url: string | null = await autodiscover({
     username : emailAddress,
     emailAddress,
     password,

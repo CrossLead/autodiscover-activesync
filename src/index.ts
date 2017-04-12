@@ -26,6 +26,17 @@ function xmlToJson(xmlString: string) {
   });
 }
 
+function parseAutodiscoverResponse(json: any): string {
+  // TODO: use lodash _.get()?
+  return json &&
+    json.autodiscover &&
+    json.autodiscover.response &&
+    json.autodiscover.response.action &&
+    json.autodiscover.response.action.settings &&
+    json.autodiscover.response.action.settings.server &&
+    json.autodiscover.response.action.settings.server.url;
+}
+
 async function queryDns(domain: string, debug: boolean) {
   try {
     const response: any[] = await dnsResolve(`_autodiscover._tcp.${  domain }`, 'SRV');
@@ -84,7 +95,7 @@ async function getResponse(url: string, username: string, password: string, requ
       console.log('GOOD',  url);
     }
 
-    return body;
+    return json;
   }
   
   if (debug) {
@@ -96,13 +107,12 @@ async function getResponse(url: string, username: string, password: string, requ
 
 
 function createAutodiscoverXml(emailAddress: string) {
+  // Exchange XML parsing doesn't trim spaces: http://stackoverflow.com/questions/41825653/errors-during-autodiscover-procedure-on-microsoft-exchange-2016#comment70878946_41825653
   return `
 <Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/mobilesync/requestschema/2006">
   <Request>
     <EMailAddress>${ emailAddress }</EMailAddress>
-    <AcceptableResponseSchema>
-      http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006
-    </AcceptableResponseSchema>
+    <AcceptableResponseSchema>http://schemas.microsoft.com/exchange/autodiscover/mobilesync/responseschema/2006</AcceptableResponseSchema>
   </Request>
 </Autodiscover>`;
 }
@@ -127,21 +137,24 @@ async function autodiscoverDomains(domains: string[], emailAddress: string, pass
     console.log('Request XML', requestBody);
   }
 
+  let autodiscoverUrl;
   for (const domain of domains) {
     let json: any = await getResponse(`https://${ domain }/autodiscover/autodiscover.xml`, username, password, requestBody, debug);
 
-    if (json) {
-      return json;
+    if ((autodiscoverUrl = parseAutodiscoverResponse(json))) {
+      return autodiscoverUrl;
     }
 
     json = await getResponse(`https://autodiscover.${ domain }/autodiscover/autodiscover.xml`, username, password, requestBody, debug);
 
-    if (json) {
-      return json;
+    if ((autodiscoverUrl = parseAutodiscoverResponse(json))) {
+      return autodiscoverUrl;
     }
 
+    // HTTP redirect method
+    const redirectUri = `http://autodiscover.${ domain }/autodiscover/autodiscover.xml`;
     const response = await request({
-      uri: `http://autodiscover.${ domain }/autodiscover/autodiscover.xml`,
+      uri: redirectUri,
       method: 'GET',
       followRedirect: false,
       simple: false,
@@ -149,13 +162,17 @@ async function autodiscoverDomains(domains: string[], emailAddress: string, pass
     });
 
     if (response.statusCode !== 302) {
-      throw new Error();
+      throw new Error(`Redirect method: ${redirectUri} did not return status 302`);
+    }
+
+    if (!response.headers.location) {
+      throw new Error(`Redirect method: ${redirectUri} did not include Location header`);
     }
 
     json = await getResponse(response.headers.location, username, password, requestBody, debug);
 
-    if (json) {
-      return json;
+    if ((autodiscoverUrl = parseAutodiscoverResponse(json))) {
+      return autodiscoverUrl;
     }
   }
 
