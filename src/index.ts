@@ -1,8 +1,26 @@
 import * as request from 'request-promise';
 import * as denodeify from 'denodeify';
+import * as dns from 'dns';
+import {
+  parseString as parseStringCb,
+  convertableToString,
+  OptionsV2
+} from 'xml2js';
 
-const dnsResolve: any = denodeify(require('dns'));
-const parseString: any = denodeify(require('xml2js').parseString);
+
+type ParseStringDenodeified = (
+  str: convertableToString,
+  opts?: OptionsV2
+) => Promise<any>;
+
+type DNSResolveDenodeified = (
+  domain: string,
+  rtype?: string
+) => Promise<string[]>;
+
+
+const dnsResolve: DNSResolveDenodeified = denodeify(dns.resolve);
+const parseString: ParseStringDenodeified = denodeify(parseStringCb);
 
 /**
  * Removes the potential prefix of a string and makes the first character
@@ -40,10 +58,10 @@ function parseAutodiscoverResponse(json: any): string {
 async function queryDns(domain: string, debug: boolean) {
   try {
     const response: any[] = await dnsResolve(`_autodiscover._tcp.${  domain }`, 'SRV');
-    const names = response.map( (e: any) => e.name);
+    const names = response.map((e: any) => e.name);
 
     if (debug) {
-      console.log('queryDns, names', names);     
+      console.log('queryDns, names', names);
     }
 
     return names;
@@ -52,7 +70,13 @@ async function queryDns(domain: string, debug: boolean) {
   }
 }
 
-async function getResponse(url: string, username: string, password: string, requestBody: string, debug: boolean) {
+async function getResponse(
+  url: string,
+  username: string,
+  password: string,
+  requestBody: string,
+  debug: boolean
+) {
   const response = await request({
     uri: url,
     method: 'POST',
@@ -78,7 +102,7 @@ async function getResponse(url: string, username: string, password: string, requ
     if (debug) {
       console.log('NO RESPONSE for URL', url);
     }
-    
+
     return null;
   }
 
@@ -97,7 +121,7 @@ async function getResponse(url: string, username: string, password: string, requ
 
     return json;
   }
-  
+
   if (debug) {
     console.log('NO GOOD', url);
   }
@@ -128,9 +152,15 @@ function createAutodiscoverXml(emailAddress: string) {
  * @param {String} password
  * @param {String} username
  * @param {Boolean} debug
- * 
+ *
  */
-async function autodiscoverDomains(domains: string[], emailAddress: string, password: string, username: string, debug: boolean) {
+async function autodiscoverDomains(
+  domains: string[],
+  emailAddress: string,
+  password: string,
+  username: string,
+  debug: boolean
+) {
   const requestBody = createAutodiscoverXml(emailAddress);
 
   if (debug) {
@@ -189,13 +219,22 @@ async function autodiscoverDomains(domains: string[], emailAddress: string, pass
  * @param {Boolean} [params.queryDns]
  * @param {Boolean} [params.debug]
  */
-async function autodiscover(params: any) {
-  const emailAddress: string = params.emailAddress;
-  const password: string = params.password;
-  const username: string = params.username || emailAddress;
-  const query: boolean = params.queryDns || true;
+async function autodiscover(params: {
+  emailAddress: string;
+  password: string;
+  username?: string;
+  queryDns?: boolean;
+  debug?: boolean;
+}) {
+  const {
+    emailAddress,
+    password,
+    username = params.emailAddress,
+    queryDns: query = true,
+    debug = false
+  } = params;
+
   const domain: string = emailAddress.substr(emailAddress.indexOf('@') + 1);
-  const debug: boolean = params.debug || false;
 
   let domains: string[] = [domain];
 
