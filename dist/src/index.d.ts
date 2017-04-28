@@ -8,5 +8,11 @@
  * @param {Boolean} [params.queryDns]
  * @param {Boolean} [params.debug]
  */
-declare function autodiscover(params: any): Promise<string | null>;
+declare function autodiscover(params: {
+    emailAddress: string;
+    password: string;
+    username?: string;
+    queryDns?: boolean;
+    debug?: boolean;
+}): Promise<string | null>;
 export default autodiscover;

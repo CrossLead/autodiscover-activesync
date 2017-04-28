@@ -13,5 +13,7 @@ test('get auto discover url', async () => {
     debug: true
   });
 
-  expect(url, 'should find correct active sync url').to.equal('https://outlook.office365.com/Microsoft-Server-ActiveSync');
+  expect(url, 'should find correct active sync url').to.equal(
+    password === 'PASSWORD' ? null : 'https://outlook.office365.com/Microsoft-Server-ActiveSync'
+  );
 });
