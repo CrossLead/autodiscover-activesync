@@ -1,7 +1,7 @@
 {
   "name": "autodiscover-activesync",
   "version": "0.0.1",
-  "description": "Autodiscover for Active Sync",
+  "description": "Autodiscover for ActiveSync",
   "main": "./dist/src/index.js",
   "typings": "./dist/src/index.d.ts",
   "scripts": {
@@ -22,6 +22,7 @@
   "keywords": [
     "autodiscover",
     "exchange",
+    "activesync",
     "microsoft",
     "pox"
   ],

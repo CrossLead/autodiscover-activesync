@@ -23,8 +23,8 @@ npm install --save autodiscover-activesync
 import { autodiscover } from 'autodiscover-activesync';
 
 const url = autodiscover({
-  username : 'youremail@yourcomain.com',
-  emailAddress : 'youremail@yourcomain.com',
+  username : 'youremail@yourdomain.com',
+  emailAddress : 'youremail@yourdomain.com',
   password: 'yourpassword',
   debug: true // if you want to inspect what it is checking
 });
